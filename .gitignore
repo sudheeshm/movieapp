@@ -1,0 +1,26 @@
+# User-specific files
+*.suo
+*.user
+*.vssscc
+*.pdb
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+.vs/
+
+[Pp]ackages/
+
+[Ii]nclude/**/NPS*.dll
+
+# Sensitive data files. This files must be ignored
+[Ww]eb.config
+appsettings.json
+
