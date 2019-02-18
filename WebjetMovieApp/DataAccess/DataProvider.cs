@@ -125,55 +125,6 @@ namespace WebjetMovieApp.DataAccess
             return movieInCache;
         }
 
-        public static List<MoviePrice> GetMovieDetailPrice(ApiSettings settings, string id)
-        {
-            MovieDetail movieToReturn = null;
-            var mPrices = new List<MoviePrice>();
-
-            //make sure we have this movie in the collection
-            var match = m_MovieCollection.Where(m => m.ID == id).FirstOrDefault();
-
-            if (match != null)
-            {
-                for (int i = 0; i < m_ServerDictionary.Count; i++)
-                {
-                    var server = m_ServerDictionary.ElementAt(i);
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(server.Key) && m_ApiSettings != null)
-                        {
-                            string apiURL = m_ApiSettings.ServerUrl + server.Key + "/movie/" + server.Value.IdPrefix + id;
-
-                            var taskitem = System.Threading.Tasks.Task.Run(() => getServerData(apiURL));
-                            taskitem.Wait();
-
-                            var response = taskitem.Result;
-                            var movieDetail = JsonConvert.DeserializeObject<MovieDetail>(response);
-                            var mprice = new MoviePrice(server.Key);
-
-                            if (movieToReturn == null && movieDetail != null)
-                            {
-                                movieToReturn = movieDetail;
-                                movieToReturn.PriceDetail = new List<MoviePrice>();
-                                movieToReturn.Price = "";
-                            }
-                            if (movieToReturn != null)
-                            {
-                                if (movieDetail != null)
-                                    mprice.Price = !string.IsNullOrEmpty(movieDetail.Price) ? movieDetail.Price : "Unavailable";
-                                movieToReturn.PriceDetail.Add(mprice);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        //log exception
-                    }
-                }
-            }
-            //return movieToReturn;
-            return movieToReturn != null ? movieToReturn.PriceDetail : null;
-        }
         #endregion
 
         #region  private functions

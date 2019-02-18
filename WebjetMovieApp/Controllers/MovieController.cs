@@ -29,14 +29,5 @@ namespace WebjetMovieApp.Controllers
         {
             return DataProvider.GetMovieDetail(_appSettings, id);
         }
-
-        [HttpGet]
-        [Route("api/movieprice")]
-        public IEnumerable<MoviePrice> GetMoviePrice(string id)
-        {
-            return DataProvider.GetMovieDetailPrice(_appSettings, id);
-        }
-
-
     }
 }
