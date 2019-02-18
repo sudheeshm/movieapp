@@ -20,7 +20,7 @@ namespace MovieAppUnitTest
             appSetting.Servers = "cinemaworld:cw, filmworld:fw";
             appSetting.ServerUrl = "http://webjetapitest.azurewebsites.net/api/";
             appSetting.TokenName = "x-access-token";
-            appSetting.TokenValue = "";     //fill the token
+            appSetting.TokenValue = "";
         }
 
         [TestMethod]
