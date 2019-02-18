@@ -20,7 +20,9 @@ export class MovieComponent implements OnInit{
         console.log("movie constructor() called");
 
         this.router = router;
-        http.get(baseUrl + 'api/movies?page=' + this.p.toString()).subscribe(result => {
+        let page = "page=0&pagesize=10"; //this.p.toString()
+
+        http.get(baseUrl + 'api/movies?' + page).subscribe(result => {
             this.movies = result.json() as Movie[];
         }, error => console.error(error));
     }
@@ -38,24 +40,3 @@ export class MovieComponent implements OnInit{
          console.log("pageChanged " + page.toString());
     }
 }
-
-//export interface Movie {
-//    id: string;
-//    title: string;
-//    year: string;
-//    type: string;
-//    poster: string;
-//}
-
-
-
-
-//export const MOVIES: Movie[] = [
-//    { "id": "1", "title": "Movie1", "year": "200", "type": "s", "poster" : "" },
-//    { "id": "2", "title": "Movie2", "year": "200", "type": "s", "poster" : "" },
-//    { "id": "3", "title": "Movie3", "year": "200", "type": "s", "poster" : "" },
-//    { "id": "4", "title": "Movie4", "year": "200", "type": "s", "poster" : "" },
-//    { "id": "5", "title": "Movie5", "year": "200", "type": "s", "poster" : "" },
-//    { "id": "6", "title": "Movie6", "year": "200", "type": "s", "poster" : "" },
-//    { "id": "7", "title": "Movie7", "year": "200", "type": "s", "poster" : "" },
-// ]

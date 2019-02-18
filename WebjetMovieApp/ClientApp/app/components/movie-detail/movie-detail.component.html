@@ -1,21 +1,4 @@
 <h1>Movie detail</h1>
-<!--<div>
-    <p>id : {{moviedetail.id}}</p>
-    <p>title : {{moviedetail.title}}</p>
-    <p>price 1 : {{moviedetail.pricedetail[0].price}}</p>
-</div>-->
-<!--<div style="align-content:center">
-    <table class="fixed" *ngIf="movieprices">
-        <tr *ngFor="let price of movieprices">
-            <td>
-                Provider:  {{price.provider}}
-            </td>
-            <td>
-                Price : {{price.price}}
-            </td>
-        </tr>
-    </table>
-</div>-->
 
 <div>
     <p>id : {{movie.id}}</p>
@@ -32,10 +15,8 @@
     <p>metascore : {{movie.detail.metascore}}</p>
     <p>rating : {{movie.detail.rating}}</p>
     <p>votes : {{movie.detail.votes}}</p>
-
-
-
 </div>
+
 <div style="align-content:center">
     <table class="fixed" *ngIf="movie">
         <thead>

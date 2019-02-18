@@ -21,18 +21,13 @@ export class MovieDetailComponent implements OnInit
 
     ngOnInit() {
         console.log("movie-detail ngOnInit() called");
-        //let id = this.route.snapshot.paramMap.get('id');
         this.route.paramMap.subscribe((params: ParamMap) => {
             let id = params.get('id');
             this.movieId = id;
         });
 
         this.http.get(this.baseUrl + 'api/movie?id=' + this.movieId.toString()).subscribe(result => {
-            //this.movieprices = result.json() as MoviePrice;
             this.movie = result.json() as Movie;
-
-            console.log(this.movie.detail.language);
-            console.log(this.movie.detail.priceDetail[0].provider);
         }, error => console.error(error));
     }
 }

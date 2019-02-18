@@ -31,7 +31,8 @@ namespace WebjetMovieApp.DataAccess
             bool bMoviesUpdated = false;
 
             //create a dictionary of servers (this gives more freedom to add more servers later)
-            initialiseServerLoadTime();
+            if (!initialiseServerLoadTime())
+                return null;
 
             //go thru each api-server details configured in the settings file and fetch data if needed.
             for (int i = 0; i < m_ServerDictionary.Count; i++)
@@ -161,20 +162,28 @@ namespace WebjetMovieApp.DataAccess
         /// <summary>
         /// Initialise the cache collection
         /// </summary>
-        private static void initialiseServerLoadTime()
+        private static bool initialiseServerLoadTime()
         {
-            if(m_ApiSettings != null)
+            try
             {
-                var servers = m_ApiSettings.Servers.Split(',').Select(p => p.Trim()).ToList();
-                foreach (var server in servers)
+                if (m_ApiSettings != null)
                 {
-                    var details = server.Split(':').ToList();
-                    if (!m_ServerDictionary.ContainsKey(details[0]))
+                    var servers = m_ApiSettings.Servers.Split(',').Select(p => p.Trim()).ToList();
+                    foreach (var server in servers)
                     {
-                        m_ServerDictionary.Add(details[0], new ServerData(details[0], details[1]));
+                        var details = server.Split(':').ToList();
+                        if (!m_ServerDictionary.ContainsKey(details[0]))
+                        {
+                            m_ServerDictionary.Add(details[0], new ServerData(details[0], details[1]));
+                        }
                     }
                 }
             }
+            catch(Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
         /// <summary>
         /// Construct the MovieDetail Object from the string
