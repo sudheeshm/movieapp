@@ -22,5 +22,5 @@ bld/
 
 # Sensitive data files. This files must be ignored
 [Ww]eb.config
-appsettings.json
+
 
