@@ -50,9 +50,12 @@ namespace WebjetMovieApp.DataAccess
 
                             var response = taskitem.Result;
                             var list = JsonConvert.DeserializeObject<API_Movies>(response);
-                            server.Value.MovieList = list.Movies;
-                            server.Value.LastLoadTime = DateTime.Now;
-                            bMoviesUpdated = true;
+                            if (list != null)
+                            {
+                                server.Value.MovieList = list.Movies;
+                                server.Value.LastLoadTime = DateTime.Now;
+                                bMoviesUpdated = true;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -81,8 +84,48 @@ namespace WebjetMovieApp.DataAccess
         /// </summary>
         /// <param name="id"></param>
         ///
-        //public static MovieDetail GetMovieDetail(ApiSettings settings, string id)
-        public static List<MoviePrice> GetMovieDetail(ApiSettings settings, string id)
+        public static Movie GetMovieDetail(ApiSettings settings, string id)
+        {
+            //make sure we have this movie in the collection
+            var movieInCache = m_MovieCollection.Where(m => m.ID == id).FirstOrDefault();
+
+            if (movieInCache != null)
+            {
+                //if we have outdated record - updated it now from the db server
+                if (movieInCache.Detail == null || (movieInCache.Detail != null && movieInCache.Detail.LastUpdated.AddHours(24) > DateTime.Now))
+                {
+                    List<MovieDetail> mDetails = new List<MovieDetail>();
+
+                    for (int i = 0; i < m_ServerDictionary.Count; i++)
+                    {
+                        var server = m_ServerDictionary.ElementAt(i);
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(server.Key) && m_ApiSettings != null)
+                            {
+                                string apiURL = m_ApiSettings.ServerUrl + server.Key + "/movie/" + server.Value.IdPrefix + id;
+
+                                var taskitem = System.Threading.Tasks.Task.Run(() => getServerData(apiURL));
+                                taskitem.Wait();
+
+                                var response = taskitem.Result;
+                                mDetails.Add(getMovieDetail(response, server.Key));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //log exception
+                        }
+                    }
+
+                    //update the cached version to the latest version with price and other details
+                    updateMovieDetail(movieInCache, mDetails);
+                }
+            }
+            return movieInCache;
+        }
+
+        public static List<MoviePrice> GetMovieDetailPrice(ApiSettings settings, string id)
         {
             MovieDetail movieToReturn = null;
             var mPrices = new List<MoviePrice>();
@@ -114,7 +157,7 @@ namespace WebjetMovieApp.DataAccess
                                 movieToReturn.PriceDetail = new List<MoviePrice>();
                                 movieToReturn.Price = "";
                             }
-                            if(movieToReturn  != null)
+                            if (movieToReturn != null)
                             {
                                 if (movieDetail != null)
                                     mprice.Price = !string.IsNullOrEmpty(movieDetail.Price) ? movieDetail.Price : "Unavailable";
@@ -180,6 +223,82 @@ namespace WebjetMovieApp.DataAccess
                         m_ServerDictionary.Add(details[0], new ServerData(details[0], details[1]));
                     }
                 }
+            }
+        }
+        /// <summary>
+        /// Construct the MovieDetail Object from the string
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="server"></param>
+        /// <returns></returns>
+        private static MovieDetail getMovieDetail(string response, string server)
+        {
+            try
+            {
+                var movieDetail = JsonConvert.DeserializeObject<MovieDetail>(response);
+                if (movieDetail != null)
+                {
+                    movieDetail.LastUpdated = DateTime.Now;
+                    movieDetail.PriceDetail = new List<MoviePrice>();
+                    MoviePrice price = new MoviePrice(server);
+                    price.Price = string.IsNullOrEmpty(movieDetail.Price) ? movieDetail.Price : "No Price Detail" ;
+                    movieDetail.PriceDetail.Add(price);
+                }
+                return movieDetail;
+            }
+            catch(Exception ex)
+            { }
+            return null;
+        }
+
+        private static void updateMovieDetail(Movie movie, List<MovieDetail> mDetails)
+        {
+            if (movie == null)
+                return;
+
+            //let us set the detail Object if we need to
+            if (movie.Detail == null)
+            {
+                MovieDetail md = new MovieDetail();
+                md.PriceDetail = new List<MoviePrice>();
+                foreach(var server in m_ServerDictionary )
+                {
+                    MoviePrice mp = new MoviePrice(server.Key);
+                    mp.Price = "Not Available";
+                    md.PriceDetail.Add(mp);
+                }
+                movie.Detail = md;
+            }
+
+            //update the Cached version
+            if (mDetails.Count > 0)
+            {
+                var pList = movie.Detail.PriceDetail;
+                bool bOnlyPrice = false;
+                for(int i = 0; i < mDetails.Count; i++)
+                {
+                    var md = mDetails[i];
+                    if (md != null)
+                    {
+                        movie.Detail.UpdateValues(md, bOnlyPrice, m_ServerDictionary.ElementAt(i).Key);
+                        bOnlyPrice = true;
+                    }
+                }
+            }
+
+            //make sure we have entries for all the servers in the PriceList
+            if (m_ServerDictionary.Count != movie.Detail.PriceDetail.Count)
+            {
+                foreach (var server in m_ServerDictionary)
+                {
+                    if (movie.Detail.PriceDetail.Where(x => x.Provider == server.Key).FirstOrDefault() == null)
+                    {
+                        MoviePrice mp = new MoviePrice(server.Key);
+                        mp.Price = "Not Available";
+                        movie.Detail.PriceDetail.Add(mp);
+                    }
+                }
+
             }
         }
         #endregion

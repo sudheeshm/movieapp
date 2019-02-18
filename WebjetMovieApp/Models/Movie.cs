@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.ComponentModel;
+using System.Linq;
 
 namespace WebjetMovieApp.Models
 {
@@ -18,9 +19,12 @@ namespace WebjetMovieApp.Models
         }
         public string Type { get; set; }
         public string Poster { get; set; }
+
+        public MovieDetail Detail { get; set; }
+
     }
 
-    public class MovieDetail : Movie
+    public class MovieDetail
     {
         public string Rated { get; set; }
         public string Released { get; set; }
@@ -38,8 +42,49 @@ namespace WebjetMovieApp.Models
         public string Votes { get; set; }
         public string Price { get; set; }
 
-        [JsonIgnore]
         public List<MoviePrice> PriceDetail { get; set; }
+
+        [JsonIgnore]
+        public DateTime LastUpdated { get; set; }
+
+        /// <summary>
+        /// Copy fiels from new version to the existing version
+        /// </summary>
+        /// <param name="copyFrom"></param>
+        /// <param name="bOnlyPrice"></param>
+        public void UpdateValues(MovieDetail copyFrom, bool bOnlyPrice, string provider)
+        {
+            if (copyFrom != null && !bOnlyPrice)
+            {
+                Rated = copyFrom.Rated;
+                Released = copyFrom.Released;
+                Runtime = copyFrom.Runtime;
+                Genre = copyFrom.Genre;
+
+                Director = copyFrom.Director;
+                Writer = copyFrom.Writer;
+                Actors = copyFrom.Actors;
+                Plot = copyFrom.Plot;
+                Language = copyFrom.Language;
+                Awards = copyFrom.Awards;
+
+                Metascore = copyFrom.Metascore;
+                Rating = copyFrom.Rating;
+                Votes = copyFrom.Votes;
+                Price = "";
+            }
+
+            //copy the Price details
+            var pd = PriceDetail.Where(p => p.Provider == provider).FirstOrDefault();
+            if (pd == null)
+            {
+                var mp = new MoviePrice(provider);
+                mp.Price = copyFrom.Price;
+                PriceDetail.Add(mp);
+            }
+            else
+                pd.Price = copyFrom.Price;
+        }
     }
 
     public class API_Movies

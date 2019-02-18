@@ -4,8 +4,7 @@
     <p>title : {{moviedetail.title}}</p>
     <p>price 1 : {{moviedetail.pricedetail[0].price}}</p>
 </div>-->
-
-<div style="align-content:center">
+<!--<div style="align-content:center">
     <table class="fixed" *ngIf="movieprices">
         <tr *ngFor="let price of movieprices">
             <td>
@@ -15,5 +14,49 @@
                 Price : {{price.price}}
             </td>
         </tr>
+    </table>
+</div>-->
+
+<div>
+    <p>id : {{movie.id}}</p>
+    <p>title : {{movie.title}}</p>
+    <p>rated : {{movie.detail.rated}}</p>
+    <p>released : {{movie.detail.released}}</p>
+    <p>director : {{movie.detail.director}}</p>
+    <p>writer : {{movie.detail.writer}}</p>
+    <p>actors : {{movie.detail.actors}}</p>
+    <p>plot : {{movie.detail.plot}}</p>
+    <p>language : {{movie.detail.language}}</p>
+    <p>country : {{movie.detail.country}}</p>
+    <p>awards : {{movie.detail.awards}}</p>
+    <p>metascore : {{movie.detail.metascore}}</p>
+    <p>rating : {{movie.detail.rating}}</p>
+    <p>votes : {{movie.detail.votes}}</p>
+
+
+
+</div>
+<div style="align-content:center">
+    <table class="fixed" *ngIf="movie">
+        <thead>
+            <tr style="text-align:center">
+                <th>
+                    Provider
+                </th>
+                <th>
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let price of movie.detail.priceDetail">
+                <td>
+                    {{price.provider}}
+                </td>
+                <td>
+                    {{price.price}}
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>

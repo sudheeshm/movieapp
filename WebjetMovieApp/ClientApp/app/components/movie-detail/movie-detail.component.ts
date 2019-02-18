@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Http } from '@angular/http';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Movie, MovieDetail, MoviePrice } from '../../../model/movie';
 
 @Component({
     selector: 'movie-detail',
@@ -11,7 +12,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 export class MovieDetailComponent implements OnInit
 {
     private movieId: any;
-    private moviedetail: any;
+    private movie: any;
     private movieprices: any;
 
     constructor(private route: ActivatedRoute, private http: Http, @Inject('BASE_URL') private baseUrl: string) {
@@ -27,35 +28,11 @@ export class MovieDetailComponent implements OnInit
         });
 
         this.http.get(this.baseUrl + 'api/movie?id=' + this.movieId.toString()).subscribe(result => {
-            this.movieprices = result.json() as MoviePrice;
+            //this.movieprices = result.json() as MoviePrice;
+            this.movie = result.json() as Movie;
 
-            console.log(this.movieprices.toString);
+            console.log(this.movie.detail.language);
+            console.log(this.movie.detail.priceDetail[0].provider);
         }, error => console.error(error));
     }
-}
-
-export interface MovieDetail {
-    id: string;
-    title: string;
-    year: string;
-    type: string;
-    poster: string;
-    rated: string;
-    released: string;
-    runtime: string;
-    director: string;
-    writer: string;
-    actors: string;
-    plot: string;
-    language: string;
-    country: string;
-    awards: string;
-    metascore: string;
-    rating: string;
-    votes: string;
-    pricedetail: MoviePrice[];
-}
-export interface MoviePrice {
-    provider: string;
-    price: string;
 }

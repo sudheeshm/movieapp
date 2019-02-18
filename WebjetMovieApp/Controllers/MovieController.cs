@@ -25,16 +25,18 @@ namespace WebjetMovieApp.Controllers
 
         [HttpGet]
         [Route("api/movie")]
-        public IEnumerable<MoviePrice> GetMovieDetail(string id)
+        public Movie GetMovieDetail(string id)
         {
             return DataProvider.GetMovieDetail(_appSettings, id);
         }
 
-        //[HttpGet]
-        //[Route("api/movie")]
-        //public MovieDetail GetMovieDetail(string id)
-        //{
-        //    return DataProvider.GetMovieDetail(_appSettings, id);
-        //}
+        [HttpGet]
+        [Route("api/movieprice")]
+        public IEnumerable<MoviePrice> GetMoviePrice(string id)
+        {
+            return DataProvider.GetMovieDetailPrice(_appSettings, id);
+        }
+
+
     }
 }

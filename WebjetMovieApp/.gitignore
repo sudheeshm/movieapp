@@ -235,3 +235,8 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+[Pp]ackages/
+
+# Sensitive data files. This files must be ignored
+[Ww]eb.config
+appsettings.json
