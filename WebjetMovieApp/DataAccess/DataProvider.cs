@@ -143,6 +143,7 @@ namespace WebjetMovieApp.DataAccess
 
             using (var client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromSeconds(30);  //30 sec timeout
                 client.BaseAddress = new Uri(apiUrl);
                 client.DefaultRequestHeaders.Add(m_ApiSettings.TokenName, m_ApiSettings.TokenValue);
                 var response = await client.GetAsync(apiUrl);

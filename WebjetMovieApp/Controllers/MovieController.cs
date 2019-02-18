@@ -21,15 +21,21 @@ namespace WebjetMovieApp.Controllers
         {
             //this must be done as page by page 
             var movies = DataProvider.GetAllMovies(_appSettings) as List<Movie>;
+
             if (movies != null && movies.Count > 0 && page > 0)
             {
                 var startIndex = (page - 1) * pagesize;
+                startIndex = (startIndex < 0) ? 0 : startIndex;
+
                 if (startIndex <= movies.Count)
                 {
                     if (startIndex + pagesize > movies.Count)
                         pagesize = movies.Count - (startIndex + 1);
+
+                    return movies.GetRange(startIndex, pagesize);
                 }
-                return movies.GetRange(startIndex, pagesize);
+                else
+                    return new List<Movie>();
             }
             return movies;
         }

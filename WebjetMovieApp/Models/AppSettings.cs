@@ -11,7 +11,6 @@ namespace WebjetMovieApp.Models
     public class ApiSettings
     {
         public string Servers { get; set; }
-        public string IdPrefix { get; set; }
         public string ServerUrl { get; set; }
         public string TokenName { get; set; }
         public string TokenValue { get; set; }
