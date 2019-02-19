@@ -1,7 +1,7 @@
 # WebJet Movie App
 ------------------
 
-Build the Application in VS 2017
+Build the Application in VS 2017 with .Net Core 2 and Angular 4.2.5
 
 Please fill the value for token in 
    1. appsettings.json
