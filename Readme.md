@@ -7,6 +7,8 @@ Please fill the value for token in
    1. appsettings.json
    2. UnitTest.cs class (if you like to unit test the application)
    
+Server side Unit testing is available. This is done via MS test tools.
+   
    
 There are few asumptions made here:
 -----------------------------------
@@ -19,3 +21,4 @@ There are few asumptions made here:
 	a. In every 24 hours
 	b. If any server never responded with a valid data in the past 24 hours
 6. Application server is implemented with page wise data load. However, it is not implemented in the client yet.
+7. Tested predominantly with Chrome
